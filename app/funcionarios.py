@@ -10,11 +10,19 @@ def init_table():
         conn = get_db_connection()
         cur = conn.cursor()
         cur.execute("""
-            CREATE TABLE IF NOT EXISTS "tbl_funcionarios" (
+            CREATE TABLE IF NOT EXISTS "testesfuncionarios" (
                 id SERIAL PRIMARY KEY,
                 nome VARCHAR(100) NOT NULL,
-                data_de_nascimento DATE NOT NULL,
-                cargo VARCHAR(50) NOT NULL
+                cargo VARCHAR(50),
+                secao VARCHAR(50),
+                situacao VARCHAR(2),
+                admissao DATE,
+                salario REAL,
+                cpf VARCHAR(15),
+                tipo VARCHAR(2),
+                esocial VARCHAR(15),
+                obra INTEGER,
+                nascimento DATE
             );
         """)
         conn.commit()
