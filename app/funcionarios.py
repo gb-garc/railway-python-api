@@ -9,7 +9,8 @@ def init_table():
     try:
         conn = get_db_connection()
         cur = conn.cursor()
-        cur.execute("""
+        cur.execute(
+            """
             CREATE TABLE IF NOT EXISTS "testesfuncionarios" (
                 id SERIAL PRIMARY KEY,
                 nome VARCHAR(100) NOT NULL,
@@ -22,9 +23,11 @@ def init_table():
                 tipo VARCHAR(2),
                 esocial VARCHAR(15),
                 obra INTEGER,
-                nascimento DATE
+                nascimento DATE,
+                id_interno INTEGER
             );
-        """)
+            """
+        )
         conn.commit()
         cur.close()
         conn.close()
@@ -37,22 +40,23 @@ def init_table():
 def create_funcionario():
     data = request.get_json() or {}
     nome = data.get("nome")
-    data_nasc = data.get("data_de_nascimento")
+    nascimento = data.get("nascimento")
     cargo = data.get("cargo")
-    id_interno=data.get("id")
+    id_interno = data.get("id")
 
-    if not nome or not data_nasc or not cargo:
-        return jsonify({"error": "Campos obrigatórios: nome, data_de_nascimento, cargo."}), 400
+    # Verifica campos obrigatórios
+    if not nome or not nascimento or not cargo:
+        return jsonify({"error": "Campos obrigatórios: nome, nascimento, cargo."}), 400
 
     try:
         conn = get_db_connection()
         cur = conn.cursor()
         query = """
-            INSERT INTO "testesfuncionarios" (nome, data_de_nascimento, cargo, id_interno)
+            INSERT INTO "testesfuncionarios" (nome, nascimento, cargo, id_interno)
             VALUES (%s, %s, %s, %s)
-            RETURNING id, nome, data_de_nascimento, cargo;
+            RETURNING id, nome, nascimento, cargo;
         """
-        cur.execute(query, (nome, data_nasc, cargo))
+        cur.execute(query, (nome, nascimento, cargo, id_interno))
         novo = cur.fetchone()
         conn.commit()
         cur.close()
@@ -61,7 +65,7 @@ def create_funcionario():
         return jsonify({
             "id": novo[0],
             "nome": novo[1],
-            "data_de_nascimento": str(novo[2]),
+            "nascimento": str(novo[2]),
             "cargo": novo[3]
         }), 201
     except Exception as e:
