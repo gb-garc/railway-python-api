@@ -3,7 +3,7 @@ from app.db import get_db_connection
 
 funcionarios_bp = Blueprint('funcionarios', __name__)
 
-# Exemplo: Rota opcional para criar/verificar a tabela
+# Rota opcional para criar/verificar a tabela
 @funcionarios_bp.route("/init", methods=["POST"])
 def init_table():
     try:
@@ -31,7 +31,7 @@ def init_table():
         conn.commit()
         cur.close()
         conn.close()
-        return jsonify({"message": "Tabela tbl_funcionarios criada/verificada."}), 200
+        return jsonify({"message": "Tabela testesfuncionarios criada/verificada."}), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
@@ -39,6 +39,8 @@ def init_table():
 @funcionarios_bp.route("/funcionarios", methods=["POST"])
 def create_funcionario():
     data = request.get_json() or {}
+
+    # Extrai campos do JSON
     id_interno = data.get("id_interno")
     nome = data.get("nome")
     cargo = data.get("cargo")
@@ -59,12 +61,24 @@ def create_funcionario():
     try:
         conn = get_db_connection()
         cur = conn.cursor()
+
+        # Monta a query com todas as colunas
         query = """
-            INSERT INTO "testesfuncionarios" (id_interno, nome, cargo, secao, situacao, admissao, salario, cpf, tipo, esocial, obra, nascimento)
+            INSERT INTO "testesfuncionarios" (
+                id_interno, nome, cargo, secao, situacao, admissao,
+                salario, cpf, tipo, esocial, obra, nascimento
+            )
             VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
             RETURNING id, nome, nascimento, cargo;
         """
-        cur.execute(query, (nome, nascimento, cargo, id_interno))
+
+        cur.execute(
+            query,
+            (
+                id_interno, nome, cargo, secao, situacao, admissao,
+                salario, cpf, tipo, esocial, obra, nascimento
+            )
+        )
         novo = cur.fetchone()
         conn.commit()
         cur.close()
