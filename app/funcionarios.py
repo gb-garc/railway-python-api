@@ -1,5 +1,6 @@
 from flask import Blueprint, request, jsonify
 from app.db import get_db_connection
+from datetime import date, datetime  # importar explicitamente
 
 funcionarios_bp = Blueprint('funcionarios', __name__)
 
