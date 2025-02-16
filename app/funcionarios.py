@@ -99,19 +99,26 @@ def get_funcionarios():
     try:
         conn = get_db_connection()
         cur = conn.cursor()
-        cur.execute('SELECT id, nome, data_de_nascimento, cargo FROM "tbl_funcionarios"')
+        cur.execute('SELECT * FROM "testesfuncionarios"')
+        
+        # Obtém o nome das colunas
+        columns = [desc[0] for desc in cur.description]
         rows = cur.fetchall()
         cur.close()
         conn.close()
 
         funcionarios = []
-        for r in rows:
-            funcionarios.append({
-                "id": r[0],
-                "nome": r[1],
-                "data_de_nascimento": str(r[2]),
-                "cargo": r[3]
-            })
+        for row in rows:
+            row_dict = {}
+            for i, col_name in enumerate(columns):
+                value = row[i]
+                # Caso a coluna seja do tipo data/datetime, convertemos para string
+                if isinstance(value, (datetime.date, datetime.datetime)):
+                    row_dict[col_name] = value.isoformat()
+                else:
+                    row_dict[col_name] = value
+            funcionarios.append(row_dict)
+
         return jsonify(funcionarios), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500
