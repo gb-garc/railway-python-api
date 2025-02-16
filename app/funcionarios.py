@@ -39,10 +39,18 @@ def init_table():
 @funcionarios_bp.route("/funcionarios", methods=["POST"])
 def create_funcionario():
     data = request.get_json() or {}
+    id_interno = data.get("id_interno")
     nome = data.get("nome")
-    nascimento = data.get("nascimento")
     cargo = data.get("cargo")
-    id_interno = data.get("id")
+    secao = data.get("secao")
+    situacao = data.get("situacao")
+    admissao = data.get("admissao")
+    salario = data.get("salario")
+    cpf = data.get("cpf")
+    tipo = data.get("tipo")
+    esocial = data.get("esocial")
+    obra = data.get("obra")
+    nascimento = data.get("nascimento")
 
     # Verifica campos obrigatórios
     if not nome or not nascimento or not cargo:
@@ -52,8 +60,8 @@ def create_funcionario():
         conn = get_db_connection()
         cur = conn.cursor()
         query = """
-            INSERT INTO "testesfuncionarios" (nome, nascimento, cargo, id_interno)
-            VALUES (%s, %s, %s, %s)
+            INSERT INTO "testesfuncionarios" (id_interno, nome, cargo, secao, situacao, admissao, salario, cpf, tipo, esocial, obra, nascimento)
+            VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
             RETURNING id, nome, nascimento, cargo;
         """
         cur.execute(query, (nome, nascimento, cargo, id_interno))
