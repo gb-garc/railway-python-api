@@ -10,7 +10,7 @@ def init_table():
         conn = get_db_connection()
         cur = conn.cursor()
         cur.execute("""
-            CREATE TABLE IF NOT EXISTS "TBL_Funcionarios" (
+            CREATE TABLE IF NOT EXISTS "tbl_funcionarios" (
                 id SERIAL PRIMARY KEY,
                 nome VARCHAR(100) NOT NULL,
                 data_de_nascimento DATE NOT NULL,
@@ -20,7 +20,7 @@ def init_table():
         conn.commit()
         cur.close()
         conn.close()
-        return jsonify({"message": "Tabela TBL_Funcionarios criada/verificada."}), 200
+        return jsonify({"message": "Tabela tbl_funcionarios criada/verificada."}), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
@@ -39,7 +39,7 @@ def create_funcionario():
         conn = get_db_connection()
         cur = conn.cursor()
         query = """
-            INSERT INTO "TBL_Funcionarios" (nome, data_de_nascimento, cargo)
+            INSERT INTO "tbl_funcionarios" (nome, data_de_nascimento, cargo)
             VALUES (%s, %s, %s)
             RETURNING id, nome, data_de_nascimento, cargo;
         """
@@ -64,7 +64,7 @@ def get_funcionarios():
     try:
         conn = get_db_connection()
         cur = conn.cursor()
-        cur.execute('SELECT id, nome, data_de_nascimento, cargo FROM "TBL_Funcionarios"')
+        cur.execute('SELECT id, nome, data_de_nascimento, cargo FROM "tbl_funcionarios"')
         rows = cur.fetchall()
         cur.close()
         conn.close()
@@ -96,7 +96,7 @@ def update_funcionario(func_id):
         conn = get_db_connection()
         cur = conn.cursor()
         query = """
-            UPDATE "TBL_Funcionarios"
+            UPDATE "tbl_funcionarios"
             SET nome = %s, data_de_nascimento = %s, cargo = %s
             WHERE id = %s
             RETURNING id, nome, data_de_nascimento, cargo;
@@ -126,7 +126,7 @@ def delete_funcionario(func_id):
         conn = get_db_connection()
         cur = conn.cursor()
         query = """
-            DELETE FROM "TBL_Funcionarios"
+            DELETE FROM "tbl_funcionarios"
             WHERE id = %s
             RETURNING id;
         """
