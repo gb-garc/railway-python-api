@@ -39,6 +39,7 @@ def create_funcionario():
     nome = data.get("nome")
     data_nasc = data.get("data_de_nascimento")
     cargo = data.get("cargo")
+    id_interno=data.get("id")
 
     if not nome or not data_nasc or not cargo:
         return jsonify({"error": "Campos obrigatórios: nome, data_de_nascimento, cargo."}), 400
@@ -47,8 +48,8 @@ def create_funcionario():
         conn = get_db_connection()
         cur = conn.cursor()
         query = """
-            INSERT INTO "tbl_funcionarios" (nome, data_de_nascimento, cargo)
-            VALUES (%s, %s, %s)
+            INSERT INTO "testesfuncionarios" (nome, data_de_nascimento, cargo, id_interno)
+            VALUES (%s, %s, %s, %s)
             RETURNING id, nome, data_de_nascimento, cargo;
         """
         cur.execute(query, (nome, data_nasc, cargo))
