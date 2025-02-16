@@ -100,8 +100,6 @@ def get_funcionarios():
         conn = get_db_connection()
         cur = conn.cursor()
         cur.execute('SELECT * FROM "testesfuncionarios"')
-        
-        # Obtém o nome das colunas
         columns = [desc[0] for desc in cur.description]
         rows = cur.fetchall()
         cur.close()
@@ -112,8 +110,8 @@ def get_funcionarios():
             row_dict = {}
             for i, col_name in enumerate(columns):
                 value = row[i]
-                # Caso a coluna seja do tipo data/datetime, convertemos para string
-                if isinstance(value, (datetime.date, datetime.datetime)):
+                # Se a coluna for do tipo data/datetime, converte para string
+                if isinstance(value, (date, datetime)):
                     row_dict[col_name] = value.isoformat()
                 else:
                     row_dict[col_name] = value
